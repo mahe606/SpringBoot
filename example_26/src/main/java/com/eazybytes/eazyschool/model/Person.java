@@ -1,12 +1,11 @@
 package com.eazybytes.eazyschool.model;
 
+import com.eazybytes.eazyschool.annotation.ValueOfEnum;
+import com.eazybytes.eazyschool.enums.DOStatus;
 import com.eazybytes.eazyschool.annotation.FieldsValueMatch;
 import com.eazybytes.eazyschool.annotation.PasswordValidator;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -30,6 +29,9 @@ public class Person extends BaseEntity{
     @GeneratedValue(strategy= GenerationType.AUTO,generator="native")
     @GenericGenerator(name = "native",strategy = "native")
     private int personId;
+
+/*    @ValueOfEnum(enumClass = DOStatus.class, message = "name is not part of the enum Defined")
+    private String name;*/
 
     @NotBlank(message="Name must not be blank")
     @Size(min=3, message="Name must be at least 3 characters long")
@@ -58,5 +60,12 @@ public class Person extends BaseEntity{
     @Transient
     private String confirmPwd;
 
+    @OneToOne(fetch = FetchType.EAGER,cascade = CascadeType.PERSIST, targetEntity = Roles.class)
+    @JoinColumn(name = "role_id", referencedColumnName = "roleId",nullable = false)
+    private Roles roles;
+
+    @OneToOne(fetch = FetchType.EAGER,cascade = CascadeType.ALL, targetEntity = Address.class)
+    @JoinColumn(name = "address_id", referencedColumnName = "addressId",nullable = true)
+    private Address address;
 
 }
